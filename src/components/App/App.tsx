@@ -11,6 +11,7 @@ import { useQuery, keepPreviousData, useMutation, useQueryClient } from '@tansta
 import Pagination from '../Pagination/Pagination';
 import type { NoteBody } from '../../types/note';
 import useModalControl from '../../assets/hooks/ModalControl';
+import NoteForm from '../NoteForm/NoteForm';
 
 
 
@@ -31,7 +32,7 @@ function App() {
   const mutationCreate = useMutation({
     mutationFn: async (newNote: NoteBody) => {
       const res = await createNote(newNote)
-      return res.data;
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
@@ -41,14 +42,14 @@ function App() {
   const mutationDelete = useMutation({
     mutationFn: async (id: string) => {
       const res = await deleteNote(id)
-      return res.data;
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
     }
   });
 
-  const totalPages = data?.total_pages ?? 0;
+  const totalPages = data?.totalPages ?? 0;
   useEffect(() => {
     if (isSuccess && data.notes.length == 0) {
       console.log(data.notes)
@@ -76,7 +77,7 @@ function App() {
     <>
       <div className={css.app}>
         <header className={css.toolbar}>
-          <SearchBox onSubmit={handleSearch}></SearchBox>
+          <SearchBox onChange={handleSearch}></SearchBox>
           {isSuccess && totalPages > 1 &&
             <Pagination
               currentPage={currentPage}
@@ -89,7 +90,9 @@ function App() {
         {isLoading && <Loader></Loader>}
         {isError && <ErrorMessage></ErrorMessage>}
         {data && data.notes.length > 0 && <NoteList onDelete={onNoteDelete} notes={data.notes}></NoteList>}
-        {isModalOpen && <Modal onNoteSubmit={onNoteCreate} onClose={() => closeModal()}></Modal>}
+        {isModalOpen && <Modal onClose={() => closeModal()}>
+          <NoteForm onSubmit={onNoteCreate} onCancel={() => closeModal()}></NoteForm>
+        </Modal>}
       </div >
     </>
   )

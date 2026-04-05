@@ -1,15 +1,13 @@
 import { createPortal } from "react-dom";
 import css from './Modal.module.css'
-import { useEffect } from "react";
-import NoteForm from "../NoteForm/NoteForm";
-import type { NoteBody } from "../../types/note";
+import React, { useEffect } from "react";
 
-interface MovieModalProps {
+interface NoteModalProps {
   onClose: () => void;
-  onNoteSubmit: (note: NoteBody) => void
+  children: React.ReactNode
 }
 
-export default function Modal({ onClose, onNoteSubmit }: MovieModalProps) {
+export default function Modal({ onClose, children }: NoteModalProps) {
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -40,7 +38,7 @@ export default function Modal({ onClose, onNoteSubmit }: MovieModalProps) {
     onClick={handleBackdropClick}
   >
     <div className={css.modal}>
-      <NoteForm onCancel={onClose} onSubmit={onNoteSubmit}></NoteForm>
+      {children}
     </div>
   </div>,
     document.body

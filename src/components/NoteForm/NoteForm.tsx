@@ -27,8 +27,7 @@ const NoteFormSchema = Yup.object().shape({
         .max(50, "Title is too long")
         .required("Title is required"),
     content: Yup.string()
-        .max(500, "Content is too long")
-        .required("Content is required"),
+        .max(500, "Content is too long"),
     tag: Yup.string()
         .oneOf(["Work", "Personal", "Meeting", "Shopping", "Todo"], "Invalid tag")
         .required("Tag is required")
@@ -49,19 +48,19 @@ export default function NoteForm({ onCancel, onSubmit }: NoteFormProps) {
             validationSchema={NoteFormSchema}>
             <Form className={css.form}>
                 <div className={css.formGroup}>
-                    <label htmlFor={`${fieldId}-title`}></label>
+                    <label htmlFor={`${fieldId}-title`}>Title</label>
                     <Field type="text" name="title" id={`${fieldId}-title`}
                         className={css.input} />
                     <ErrorMessage name="title" component="span" className={css.error} />
                 </div>
                 <div className={css.formGroup}>
-                    <label htmlFor={`${fieldId}-content`}></label>
+                    <label htmlFor={`${fieldId}-content`}>Content</label>
                     <Field as="textarea" name="content" id={`${fieldId}-content`}
                         rows={8} className={css.textarea} />
                     <ErrorMessage name="content" component="span" className={css.error} />
                 </div>
                 <div className={css.formGroup}>
-                    <label htmlFor={`${fieldId}-tag`}></label>
+                    <label htmlFor={`${fieldId}-tag`}>Tag</label>
                     <Field as="select" name="tag" id={`${fieldId}-tag`}
                         className={css.select} >
                         <option value="Todo">Todo</option>

@@ -5,11 +5,7 @@ const url = "https://notehub-public.goit.study/api/notes"
 
 interface FetchedData {
     notes: Note[],
-    total_pages: number,
-}
-
-interface ReturnedNote {
-    createdNote: Note
+    totalPages: number,
 }
 
 
@@ -29,7 +25,7 @@ export const fetchNotes = async (search: string, page: number) => {
 }
 
 export const createNote = async ({ title, content, tag }: NoteBody) => {
-    return await axios.post<ReturnedNote>(url, {
+    return (await axios.post<Note>(url, {
         title,
         content,
         tag
@@ -38,14 +34,14 @@ export const createNote = async ({ title, content, tag }: NoteBody) => {
             accept: 'application/json',
             Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`
         }
-    })
+    })).data
 }
 
 export const deleteNote = async (id: string) => {
-    return await axios.delete<ReturnedNote>(`${url}/${id}`, {
+    return (await axios.delete<Note>(`${url}/${id}`, {
         headers: {
             accept: 'application/json',
             Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`
         }
-    })
+    })).data
 }
