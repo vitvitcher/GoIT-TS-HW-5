@@ -13,11 +13,10 @@ export default function SearchBox({ onChange }: SearchBoxProps) {
   const updateSearchQuery =
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value)
+      onChange(searchQuery)
     };
 
-  useEffect(() => {
-    onChange(searchQuery)
-  }, [searchQuery])
+
 
   return (<input
     className={css.input}
