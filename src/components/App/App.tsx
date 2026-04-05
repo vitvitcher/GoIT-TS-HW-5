@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import css from './App.module.css'
 import toast, { Toaster } from 'react-hot-toast';
-import { fetchNotes, deleteNote, createNote } from '../../services/noteService'
+import { fetchNotes, deleteNote } from '../../services/noteService'
 import SearchBox from '../SearchBox/SearchBox';
 import NoteList from '../NoteList/NoteList';
 import Modal from '../Modal/Modal';
@@ -9,7 +9,6 @@ import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import { useQuery, keepPreviousData, useMutation, useQueryClient } from '@tanstack/react-query';
 import Pagination from '../Pagination/Pagination';
-import type { NoteBody } from '../../types/note';
 import useModalControl from '../../assets/hooks/ModalControl';
 import NoteForm from '../NoteForm/NoteForm';
 
@@ -29,15 +28,6 @@ function App() {
   })
 
   const queryClient = useQueryClient();
-  const mutationCreate = useMutation({
-    mutationFn: async (newNote: NoteBody) => {
-      const res = await createNote(newNote)
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-    }
-  });
 
   const mutationDelete = useMutation({
     mutationFn: async (id: string) => {
@@ -56,11 +46,6 @@ function App() {
       notify()
     }
   }, [data, isSuccess])
-
-  const onNoteCreate = (newNote: NoteBody) => {
-    closeModal()
-    mutationCreate.mutate(newNote)
-  }
 
   const onNoteDelete = async (id: string) => {
     mutationDelete.mutate(id)
@@ -91,7 +76,7 @@ function App() {
         {isError && <ErrorMessage></ErrorMessage>}
         {data && data.notes.length > 0 && <NoteList onDelete={onNoteDelete} notes={data.notes}></NoteList>}
         {isModalOpen && <Modal onClose={() => closeModal()}>
-          <NoteForm onSubmit={onNoteCreate} onCancel={() => closeModal()}></NoteForm>
+          <NoteForm onCancel={() => closeModal()}></NoteForm>
         </Modal>}
       </div >
     </>
