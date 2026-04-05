@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import css from './SearchBox.module.css'
 
 
