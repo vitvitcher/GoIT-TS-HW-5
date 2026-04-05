@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import css from './App.module.css'
 import toast, { Toaster } from 'react-hot-toast';
-import { fetchNotes, deleteNote } from '../../services/noteService'
+import { fetchNotes } from '../../services/noteService'
 import SearchBox from '../SearchBox/SearchBox';
 import NoteList from '../NoteList/NoteList';
 import Modal from '../Modal/Modal';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import { useQuery, keepPreviousData, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import Pagination from '../Pagination/Pagination';
 import useModalControl from '../../assets/hooks/ModalControl';
 import NoteForm from '../NoteForm/NoteForm';
+import { useDebouncedCallback } from 'use-debounce';
 
 
 
@@ -27,17 +28,7 @@ function App() {
     placeholderData: keepPreviousData,
   })
 
-  const queryClient = useQueryClient();
 
-  const mutationDelete = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await deleteNote(id)
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-    }
-  });
 
   const totalPages = data?.totalPages ?? 0;
   useEffect(() => {
@@ -47,14 +38,15 @@ function App() {
     }
   }, [data, isSuccess])
 
-  const onNoteDelete = async (id: string) => {
-    mutationDelete.mutate(id)
-  }
 
-  const handleSearch = async (newQuery: string) => {
+
+
+
+
+  const handleSearch = useDebouncedCallback((newQuery) => {
     setQuery(newQuery)
     setCurrentPage(1)
-  }
+  }, 300)
 
 
 
@@ -74,7 +66,7 @@ function App() {
         <Toaster></Toaster>
         {isLoading && <Loader></Loader>}
         {isError && <ErrorMessage></ErrorMessage>}
-        {data && data.notes.length > 0 && <NoteList onDelete={onNoteDelete} notes={data.notes}></NoteList>}
+        {data && data.notes.length > 0 && <NoteList notes={data.notes}></NoteList>}
         {isModalOpen && <Modal onClose={() => closeModal()}>
           <NoteForm onCancel={() => closeModal()}></NoteForm>
         </Modal>}

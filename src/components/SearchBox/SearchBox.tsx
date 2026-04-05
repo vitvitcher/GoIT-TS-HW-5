@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import css from './SearchBox.module.css'
-// import { useDebouncedCallback } from 'use-debounce';
 
 
 interface SearchBoxProps {
-  onChange: (query: string) => Promise<void>
+  onChange: (query: string) => void
 }
 
 export default function SearchBox({ onChange }: SearchBoxProps) {
@@ -24,6 +23,6 @@ export default function SearchBox({ onChange }: SearchBoxProps) {
     className={css.input}
     type="text"
     placeholder="Search notes"
-    value={searchQuery}
+    defaultValue={searchQuery}
     onChange={updateSearchQuery} />)
 }
